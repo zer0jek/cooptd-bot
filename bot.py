@@ -19,12 +19,12 @@ def calculate_points(normal, hard, hell, abyss):
     return normal*1 + hard*2 + hell*3 + abyss*4
 
 def extract_clears(text):
-    # Możliwe tłumaczenia nagłówka 'Clears'
+    # Tłumaczenia nagłówka 'Clears'
     clears_headers = [
         'clears', 'wyczyszczenia', 'czyszczenia', 'abschlüsse', '净化', 'очистки', 'limpiezas', 'nettoyages', 'pulizie', 'limpezas',
-        '通关次数', 'クリア回数', '클리어', 'số lần vượt', 'abîme', 'abgrund', 'abismo', 'abisso', 'бездна', '深渊', 'アビス', '심연', 'vực thẳm'
+        '通关次数', 'クリア回数', '클리어', 'số lần vượt', '通關次數'
     ]
-    # Możliwe nazwy poziomów trudności
+    # Tłumaczenia poziomów trudności
     difficulties = {
         'normal': ['normal', 'normale', 'normalny', 'обычный', '一般', 'ノーマル', '일반', 'thường'],
         'hard': ['hard', 'difficile', 'schwer', 'difícil', 'trudny', 'сложно', '困难', 'ハード', '어려움', 'khó'],
@@ -32,42 +32,27 @@ def extract_clears(text):
         'abyss': ['abyss', 'abîme', 'abgrund', 'abismo', 'abisso', 'bezna', 'бездна', '深渊', 'アビス', '심연', 'vực thẳm']
     }
     lines = [line.strip() for line in text.splitlines() if line.strip()]
-    clears_col = None
-    header_line = None
-    # Szukamy linii z nagłówkiem kolumn
+    header_idx = None
+    # Znajdź linię z nagłówkiem
     for i, line in enumerate(lines):
         for header in clears_headers:
             if header.lower() in line.lower():
-                header_line = i
-                headers = [h.strip().lower() for h in line.split()]
-                for idx, h in enumerate(headers):
-                    if any(header.lower() == h for header in clears_headers):
-                        clears_col = idx
-                        break
+                header_idx = i
                 break
-        if clears_col is not None:
+        if header_idx is not None:
             break
-    if header_line is None:
-        return 0, 0, 0, 0  # Nie znaleziono nagłówka
-    # Szukamy liczb pod kolumną 'Clears' dla każdego poziomu trudności
+    if header_idx is None:
+        return 0, 0, 0, 0
     results = {k: 0 for k in difficulties}
-    for i in range(header_line+1, len(lines)):
-        row = lines[i].split()
-        if not row:
-            continue
+    # Przeszukaj linie po nagłówku
+    for line in lines[header_idx+1:]:
         for key, variants in difficulties.items():
-            if any(row[0].lower() == v for v in variants):
-                # Jeśli liczba kolumn >= 3, bierz ostatnią liczbę (Clears)
-                if len(row) >= 3:
-                    num_str = row[-1]
-                # Jeśli tylko 2 kolumny, bierz drugą
-                elif len(row) == 2:
-                    num_str = row[1]
+            if any(variant in line.lower() for variant in variants):
+                # Szukaj wszystkich liczb w linii
+                numbers = re.findall(r'\d+', line)
+                if numbers:
+                    results[key] = int(numbers[-1])  # Ostatnia liczba to „Clears”
                 else:
-                    num_str = '0'
-                try:
-                    results[key] = int(''.join(filter(str.isdigit, num_str)))
-                except:
                     results[key] = 0
     return results['normal'], results['hard'], results['hell'], results['abyss']
 
