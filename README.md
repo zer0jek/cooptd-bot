@@ -1,1 +1,0 @@
-# cooptd-bot
