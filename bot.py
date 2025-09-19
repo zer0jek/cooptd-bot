@@ -159,5 +159,5 @@ async def on_message(message):
 
 if __name__ == "__main__":
     import os
-    TOKEN = os.getenv("DISCORD_TOKEN") or 
+    TOKEN = os.getenv("DISCORD_TOKEN")
     bot.run(TOKEN)
