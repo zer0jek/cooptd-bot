@@ -124,7 +124,7 @@ async def on_message(message):
                     if not api_key:
                         await message.channel.send("Błąd: Brak klucza OpenAI API")
                         return
-                    normal, hard, hell, abyss = extract_clears_ai(text, api_key)
+                    normal, hard, hell, abyss = extract_clears(text)  # stary parser
                     points = calculate_points(normal, hard, hell, abyss)
                     await assign_role(message.author, points, message)
                     await message.channel.send(
