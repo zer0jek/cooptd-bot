@@ -6,7 +6,7 @@ import re
 import os
 from config import ROLE_THRESHOLDS
 from PIL import Image
-import openai
+# import openai  # Tymczasowo wyłączone
 
 ALLOWED_CHANNEL_ID = 1418694785111429200  # <-- Wstaw tutaj swój ID kanału
 
@@ -43,6 +43,44 @@ def extract_clears_ai(text, api_key):
     except Exception as e:
         print(f"AI Error: {e}")
         return 0, 0, 0, 0
+
+def extract_clears(text):
+    # Tłumaczenia nagłówka 'Clears'
+    clears_headers = [
+        'clears', 'wyczyszczenia', 'czyszczenia', 'abschlüsse', '净化', 'очистки', 'limpiezas', 'nettoyages', 'pulizie', 'limpezas',
+        '通关次数', 'クリア回数', '클리어', 'số lần vượt', '通關次數'
+    ]
+    # Tłumaczenia poziomów trudności
+    difficulties = {
+        'normal': ['normal', 'normale', 'normalny', 'обычный', '一般', 'ノーマル', '일반', 'thường'],
+        'hard': ['hard', 'difficile', 'schwer', 'difícil', 'trudny', 'сложно', '困难', 'ハード', '어려움', 'khó'],
+        'hell': ['hell', 'enfer', 'hölle', 'infierno', 'inferno', 'piekło', 'ад', '地狱', 'ヘル', '지옥', 'địa ngục'],
+        'abyss': ['abyss', 'abîme', 'abgrund', 'abismo', 'abisso', 'bezna', 'бездна', '深渊', 'アビス', '심연', 'vực thẳm']
+    }
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    header_idx = None
+    # Znajdź linię z nagłówkiem
+    for i, line in enumerate(lines):
+        for header in clears_headers:
+            if header.lower() in line.lower():
+                header_idx = i
+                break
+        if header_idx is not None:
+            break
+    if header_idx is None:
+        return 0, 0, 0, 0
+    results = {k: 0 for k in difficulties}
+    # Przeszukaj linie po nagłówku
+    for line in lines[header_idx+1:]:
+        for key, variants in difficulties.items():
+            if any(variant in line.lower() for variant in variants):
+                # Szukaj wszystkich liczb w linii
+                numbers = re.findall(r'\d+', line)
+                if numbers:
+                    results[key] = int(numbers[-1])  # Ostatnia liczba to „Clears"
+                else:
+                    results[key] = 0
+    return results['normal'], results['hard'], results['hell'], results['abyss']
 
 def compress_image_to_max_size(image_bytes, max_size=1024*1024):
     img = Image.open(io.BytesIO(image_bytes))
@@ -124,7 +162,7 @@ async def on_message(message):
                     if not api_key:
                         await message.channel.send("Błąd: Brak klucza OpenAI API")
                         return
-                    normal, hard, hell, abyss = extract_clears(text)  # stary parser
+                    normal, hard, hell, abyss = extract_clears(text)  # Użyj starego parsera
                     points = calculate_points(normal, hard, hell, abyss)
                     await assign_role(message.author, points, message)
                     await message.channel.send(
