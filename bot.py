@@ -1,3 +1,5 @@
+
+import os
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -12,8 +14,10 @@ import pytesseract
 import numpy as np
 import google.generativeai as genai
 
-# KONFIGURACJA - WYPEŁNIJ TYM POLA!
-BOT_TOKEN = "MTQxODY5MTc4NDU2MDc0MjYxMQ.G6iwTO.1Ku3XWWipE74TbelGbexp_gKE6Nf9Uf5kTHbrM"  # <-- Wklej tutaj swój prawidłowy token bota z Discord Developer Portal
+# KONFIGURACJA - TOKEN BOTA POBIERANY Z ENV!
+BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
+if not BOT_TOKEN:
+    raise RuntimeError("Brak zmiennej środowiskowej DISCORD_BOT_TOKEN! Ustaw ją w panelu Railway (Variables > New Variable).")
 OCR_API_KEY = "K83214967188957"  # Np. dla Tesseract lub innego API
 CHANNEL_ID = 1418694785111429200 # ID kanału gdzie wysyłane są obrazy
 
