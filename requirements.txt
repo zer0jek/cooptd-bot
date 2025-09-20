@@ -1,0 +1,6 @@
+discord.py
+aiohttp
+Pillow
+pytesseract
+numpy
+google-generativeai
