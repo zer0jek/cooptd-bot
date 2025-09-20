@@ -16,20 +16,6 @@ import google.generativeai as genai
 
 # KONFIGURACJA - TOKEN BOTA POBIERANY Z ENV!
 BOT_TOKEN = os.getenv("DISCORD_BOT_TOKEN")
-
-# --- KOD DIAGNOSTYCZNY ---
-if BOT_TOKEN:
-    print("--- DIAGNOSTYKA TOKENA ---")
-    print(f"Token załadowany. Długość: {len(BOT_TOKEN)}")
-    print(f"Początek tokena: {BOT_TOKEN[:4]}")
-    print(f"Koniec tokena: {BOT_TOKEN[-4:]}")
-    print("--------------------------")
-else:
-    print("--- DIAGNOSTYKA TOKENA ---")
-    print("Token NIE został załadowany. Zmienna DISCORD_BOT_TOKEN jest pusta.")
-    print("--------------------------")
-# --- KONIEC KODU DIAGNOSTYCZNEGO ---
-
 if not BOT_TOKEN:
     raise RuntimeError("Brak zmiennej środowiskowej DISCORD_BOT_TOKEN! Ustaw ją w panelu Railway (Variables > New Variable).")
 OCR_API_KEY = "K83214967188957"  # Np. dla Tesseract lub innego API
