@@ -13,7 +13,7 @@ import numpy as np
 import google.generativeai as genai
 
 # KONFIGURACJA - WYPEŁNIJ TYM POLA!
-BOT_TOKEN = "MTQxODY5MTc4NDU2MDc0MjYxMQ.GCKt69.P8QTpOZTX9WPFuMBZMzCRTfuDIHeV9dWzeU0P8"
+BOT_TOKEN = "MTQxODY5MTc4NDU2MDc0MjYxMQ.G6iwTO.1Ku3XWWipE74TbelGbexp_gKE6Nf9Uf5kTHbrM"  # <-- Wklej tutaj swój prawidłowy token bota z Discord Developer Portal
 OCR_API_KEY = "K83214967188957"  # Np. dla Tesseract lub innego API
 CHANNEL_ID = 1418694785111429200 # ID kanału gdzie wysyłane są obrazy
 
